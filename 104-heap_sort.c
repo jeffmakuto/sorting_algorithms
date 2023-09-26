@@ -1,54 +1,70 @@
 #include "sort.h"
-
 /**
- * max_heapify - turn binary tree to binary heap.
- * @array: int array rep a binary tree.
- * @size: sizze of array/tree.
- * @base: index of the base row of the tree.
- * @root: root node of the binary tree.
- */
-void max_heapify(int *array, size_t size, size_t base, size_t root)
-{
-	size_t left, right, large;
-
-	left = 2 * root + 1;
-	right = 2 * root + 2;
-	large = root;
-
-	if (left < base && array[left] > array[large])
-		large = left;
-	if (right < base && array[right] > array[large])
-		large = right;
-
-	if (large != root)
-	{
-		swap_ints(array + root, array + large);
-		print_array(array, size);
-		max_heapify(array, size, base, large);
-	}
-}
-
-/**
- * heap_sort - sort array in ascending order using heap sort algorithm.
- * @array: array
- * @size: size
+ * check_tree - swiftdown check
+ * @array: pointer to array
+ * @size: size of the pointer
+ * @size_init: original size of the array
+ * @i: index as a root of the tree
  *
- * Description: prints the array after each swap.
- */
+**/
+void check_tree(int *array, size_t size_init, size_t size, size_t i)
+{
+
+	int n, branch1, branch2;
+	size_t br1, br2;
+
+	br1 = i * 2 + 1;
+	br2 = br1 + 1;
+	branch1 = array[br1];
+	branch2 = array[br2];
+	if (((br1 < size) && (br2 < size) &&
+		(branch1 >= branch2 && branch1 > array[i]))
+		|| ((br1 == size - 1) && branch1 > array[i]))
+	{
+		n = array[i];
+		array[i] = branch1;
+		array[br1] = n;
+		print_array(array, size_init);
+	}
+	else if ((br1 < size) && (br2 < size) &&
+		(branch2 > branch1 && branch2 > array[i]))
+	{
+		n = array[i];
+		array[i] = branch2;
+		array[br2] = n;
+		print_array(array, size_init);
+	}
+	if (br1 < size - 1)
+		check_tree(array, size_init, size, br1);
+	if (br2 < size - 1)
+		check_tree(array, size_init, size, br2);
+}
+/**
+ * heap_sort - sorts an array of integers
+ * in ascending order using the Heap
+ * sort algorithm
+ * @array: pointer to array
+ * @size: size of the pointer
+ *
+**/
 void heap_sort(int *array, size_t size)
 {
-	int i;
+	size_t i, size_init = size;
+	int n;
 
-	if (array == NULL || size < 2)
+	if (!array)
 		return;
-
-	for (i = (size / 2) - 1; i >= 0; i--)
-		max_heapify(array, size, size, i);
-
-	for (i = size - 1; i > 0; i--)
+	for (i = 0; i < size / 2 ; i++)
 	{
-		swap_ints(array, array + i);
-		print_array(array, size);
-		max_heapify(array, size, i, 0);
+		check_tree(array, size_init, size, size / 2 - 1 - i);
 	}
+	for (i = 0; i < size_init - 1; i++)
+	{
+		n = array[0];
+		array[0] = array[size - 1 - i];
+		array[size - 1 - i] = n;
+		print_array(array, size_init);
+		check_tree(array, size_init, size - i - 1, 0);
+	}
+
 }

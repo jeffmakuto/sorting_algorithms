@@ -1,49 +1,47 @@
 #include "sort.h"
+#include <stdio.h>
 
 /**
- * swap_nodes - Swap nodes in a doubly-linked list.
- * @h: ptr to head of the list.
- * @n1: ptr to first node to swap.
- * @n2: The second node to swap.
- */
-void swap_nodes(listint_t **h, listint_t **n1, listint_t *n2)
-{
-	(*n1)->next = n2->next;
-
-	if (n2->next != NULL)
-		n2->next->prev = *n1;
-	n2->prev = (*n1)->prev;
-	n2->next = *n1;
-
-	if ((*n1)->prev != NULL)
-		(*n1)->prev->next = n2;
-	else
-		*h = n2;
-	(*n1)->prev = n2;
-	*n1 = n2->prev;
-}
-
-/**
- * insertion_sort_list - Sort a list using insertion sort algorithm.
- * @list: ptr to head of list
+ * insertion_sort_list - sorts a DLL of integers in
+ * ascending order using the insertion sort
+ * algorithm
  *
- * Description: Prints the list after each swap.
+ * @list: doubly linked list
+ * Return: no return
  */
 void insertion_sort_list(listint_t **list)
 {
-	listint_t *iter, *insert, *tmp;
+	listint_t *ptr, *tmp;
 
-	if (list == NULL || *list == NULL || (*list)->next == NULL)
+	if (!list)
 		return;
 
-	for (iter = (*list)->next; iter != NULL; iter = tmp)
+	ptr = *list;
+
+	while (ptr)
 	{
-		tmp = iter->next;
-		insert = iter->prev;
-		while (insert != NULL && iter->n < insert->n)
+		while (ptr->next && (ptr->n > ptr->next->n))
 		{
-			swap_nodes(list, &insert, iter);
-			print_list((const listint_t *)*list);
+			tmp = ptr->next;
+			ptr->next = tmp->next;
+			tmp->prev = ptr->prev;
+
+			if (ptr->prev)
+				ptr->prev->next = tmp;
+
+			if (tmp->next)
+				tmp->next->prev = ptr;
+
+			ptr->prev = tmp;
+			tmp->next = ptr;
+
+			if (tmp->prev)
+				ptr = tmp->prev;
+			else
+				*list = tmp;
+
+			print_list(*list);
 		}
+		ptr = ptr->next;
 	}
 }
