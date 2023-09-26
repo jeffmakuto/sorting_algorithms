@@ -1,7 +1,10 @@
 #ifndef DECK_H
 #define DECK_H
 
+/* Header files */
 #include <stdlib.h>
+
+/* Struct definitions */
 
 /**
  * enum kind_e - Enumeration of card suits.
@@ -45,6 +48,7 @@ typedef struct deck_node_s
 	struct deck_node_s *next;
 } deck_node_t;
 
+/* Prototype Functions */
 void sort_deck(deck_node_t **deck);
 
 #endif /* DECK_H */
